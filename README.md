@@ -1,31 +1,47 @@
-# Marketplace on a Ethereum Platform
-* Implemented a DApp to create a marketplace on Ethereum Framework.
+# Decentralized Marketplace DApp
 
-# GitHub Page
- Local instance of [Market Place](https://zalak13.github.io/MarketPlace-DApp/)
+**Author:** Tarang Patel  
+**Module:** CN6035 Mobile & Distributed Systems  
+**Year:** 2025
 
-# Inspiration:
-* CraigList.
-* The Distibuted Ledger Technology to have single Ledger distributed over the various nodes.This single ledger helps in deriving the history of the commodity and its flow between the different ownerships.
+## 🛒 Project Overview
 
-# What it does:
-* The purpose of the DApp is to buy and sell commodities between the different accounts.
-* Different Account holders can be created using the Metamask interface.
-* Also the event monitoring process in order to maintain the single ledger for transactions.
-
-# Challenges:
-* Faced issues using Metamask
-* Error handling
-* Test case debugging
-# Implementation:
-* Developed using Solidity and web3.js
-  * used node.js, web3 and solc compiler
-  * Used truffle framework in order to the ease tdevelopement process
-* Testing of smart contracts was done on 
-  * testrpc
-  * geth (private blockchain)
-* Testing was done using javascript instead of a solidity contract creation way.
-* Java script testing method used the Mocha framework
+This Decentralized Application (DApp) allows users to:
+- Connect their Ethereum wallet using MetaMask.
+- List articles for sale.
+- Purchase articles using ETH.
+- View buyers' history.
+- View seller article history.
+- Delete or mark articles as sold (for the seller).
   
-# Build With:
-* Solidity, MetaMask, Web3js, Geth, Testrpc, Truffle, Shell script, EVM Framework.
+The DApp is built on Ethereum blockchain using **Solidity**, **Web3.js**, **HTML**, **Bootstrap**, and **JavaScript**. The local blockchain development environment used is **Ganache**.
+
+## 🛠 Technologies Used
+
+- Solidity 0.4.24
+- Web3.js 1.8.2
+- Bootstrap 5
+- JavaScript
+- MetaMask
+- Ganache
+- Truffle
+
+## 🚀 Features
+
+- Full marketplace functionality (sell, buy, remove, mark as sold).
+- Buyers history and seller history.
+- Form validation and user-friendly toast notifications.
+- Responsive design.
+
+## 📋 Setup Instructions
+
+1. Install MetaMask in your browser.
+2. Run Ganache and deploy the smart contract.
+3. Update the contract address and ABI in the frontend.
+4. Serve the frontend files (index.html) using a local server.
+5. Interact with the DApp via your browser.
+
+## 📄 License
+
+MIT License.
+
