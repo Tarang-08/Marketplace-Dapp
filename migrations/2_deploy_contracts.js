@@ -1,5 +1,5 @@
-var MarketPlace = artifacts.require("./MarketPlace.sol");
+const MarketPlace = artifacts.require("MarketPlace");
 
-module.exports = function(deployer){
+module.exports = function (deployer) {
   deployer.deploy(MarketPlace);
-}
+};

@@ -1,122 +1,96 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.24;
 
-import "./Owned.sol";
-
-contract MarketPlace is Owned {
-
-  // Custom types
-  struct Article {
-    uint id;
-    address seller;
-    address buyer;
-    string name;
-    string description;
-    uint256 price;
-  }
-
-  // State variables
-  mapping(uint => Article) public articles;
-  uint articleCounter;
-
-  //Events
-  event sellArticleEvent(
-    uint indexed _id,
-    address indexed _seller,
-    string _name,
-    uint256 _price);
-
-  event buyArticleEvent(
-    uint indexed _id,
-    address indexed _seller,
-    address indexed _buyer,
-    string _name,
-    uint256 _price);
-
-
-  //sell an article
-  function sellArticle(string _name, string _description, uint256 _price) public {
-    // a new article
-    articleCounter++;
-
-    //store this article
-    articles[articleCounter] = Article(
-        articleCounter,
-        msg.sender,
-        0x0,
-        _name,
-        _description,
-        _price
-      );
-
-    // trigger the event
-    sellArticleEvent(articleCounter, msg.sender, _name, _price);
-  }
-
-  // fetch the number of articles in the contract
-  function getNumberOfArticles() public constant returns (uint) {
-    return articleCounter;
-  }
-
-  // fetch and returns all article IDs available for sale
-  function getArticlesForSale() public constant returns (uint[]) {
-    // we check whether there is at least one article
-    if(articleCounter == 0) {
-      return new uint[](0);
+contract MarketPlace {
+    struct Article {
+        uint id;
+        address seller;
+        address buyer;
+        string name;
+        string description;
+        uint price;
+        string buyerName;
+        uint buyerAge;
+        bool isSold;
     }
 
-    // prepare intermediary array
-    uint[] memory articleIds = new uint[](articleCounter);
+    mapping(uint => Article) public articles;
+    uint public articleCounter;
 
-    uint numberOfArticlesForSale = 0;
-    // iterate over articles
+    function sellArticle(string _name, string _description, uint _price) public {
+        articleCounter++;
+        articles[articleCounter] = Article(
+            articleCounter,
+            msg.sender,
+            0x0,
+            _name,
+            _description,
+            _price,
+            "",
+            0,
+            false
+        );
+    }
+
+function getArticlesForSale() public view returns (uint[]) {
+    uint[] memory ids = new uint[](articleCounter);
+    uint counter = 0;
     for (uint i = 1; i <= articleCounter; i++) {
-      // keep only the ID of articles not sold yet
-      if (articles[i].buyer == 0x0) {
-        articleIds[numberOfArticlesForSale] = articles[i].id;
-        numberOfArticlesForSale++;
-      }
+        if (articles[i].seller != address(0)) { // ✅ NEW SAFETY CHECK
+            if (articles[i].buyer == 0x0 && !articles[i].isSold && articles[i].price > 0) {
+                ids[counter] = i;
+                counter++;
+            }
+        }
     }
 
-    // copy the articleIds array into the smaller forSale array
-    uint[] memory forSale = new uint[](numberOfArticlesForSale);
-    for (uint j = 0; j < numberOfArticlesForSale; j++) {
-      forSale[j] = articleIds[j];
+        uint[] memory forSale = new uint[](counter);
+        for (uint j = 0; j < counter; j++) {
+            forSale[j] = ids[j];
+        }
+        return forSale;
     }
-    return (forSale);
-  }
 
-  // buy an article
-  function buyArticle(uint _id) payable public {
-    // we check whether there is at least one article
-    require(articleCounter > 0);
+    function buyArticle(uint _id, string _buyerName, uint _buyerAge) public payable {
+        Article storage article = articles[_id];
+        require(article.id > 0 && article.id <= articleCounter);
+        require(article.buyer == 0x0);
+        require(!article.isSold);
+        require(msg.sender != article.seller);
+        require(msg.value == article.price);
 
-    // we check whether the article exists
-    require(_id > 0 && _id <= articleCounter);
+        article.buyer = msg.sender;
+        article.buyerName = _buyerName;
+        article.buyerAge = _buyerAge;
+        article.isSold = true;
+        article.seller.transfer(msg.value);
+    }
 
-    // we retrieve the article
-    Article storage article = articles[_id];
+    function removeArticle(uint _id) public {
+        require(articles[_id].seller == msg.sender);
+        require(articles[_id].buyer == 0x0);
+        delete articles[_id];
+    }
 
-    // we check whether the article has not already been sold
-    require(article.buyer == 0x0);
+    function markAsSold(uint _id) public {
+        require(articles[_id].seller == msg.sender, "Only seller can mark as sold.");
+        require(articles[_id].buyer == 0x0, "Already sold via buy.");
+        articles[_id].isSold = true;
+    }
+    function getSellerArticles(address _seller) public view returns (uint[] memory) {
+    uint[] memory ids = new uint[](articleCounter);
+    uint counter = 0;
+    for (uint i = 1; i <= articleCounter; i++) {
+        if (articles[i].seller == _seller) {
+            ids[counter] = i;
+            counter++;
+        }
+    }
 
-    // we don't allow the seller to buy his/her own article
-    require(article.seller != msg.sender);
+    uint[] memory result = new uint[](counter);
+    for (uint j = 0; j < counter; j++) {
+        result[j] = ids[j];
+    }
+    return result;
+}
 
-    // we check whether the value sent corresponds to the article price
-    require(article.price == msg.value);
-
-    // keep buyer's information
-    article.buyer = msg.sender;
-
-    // the buyer can buy the article
-    article.seller.transfer(msg.value);
-
-    // trigger the event
-    buyArticleEvent(_id, article.seller, article.buyer, article.name, article.price);
-  }
-
-  //kill the smart contract
-  function kill() onlyOwner {
-    selfdestruct(owner);
-  }
 }
