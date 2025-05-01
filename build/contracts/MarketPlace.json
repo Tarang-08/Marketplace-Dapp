@@ -11741,10 +11741,16 @@
       "links": {},
       "address": "0xB413Ef9462999760FaB9Fa67e00cF866b3A90D84",
       "transactionHash": "0xd33625f4392fc21346b1c73b8580c01a6e037dff0d5109de34515f2e66cc48d1"
+    },
+    "1746100933407": {
+      "events": {},
+      "links": {},
+      "address": "0xBb1A0DB5Df80037aB85EfB0D368E312933b9af2A",
+      "transactionHash": "0xeda9bcda53d0c34a509ea3568c99ee0810262b0b3a5e686d1b51bcf5038a3e3f"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-05-01T10:02:49.297Z",
+  "updatedAt": "2025-05-01T12:02:37.526Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
